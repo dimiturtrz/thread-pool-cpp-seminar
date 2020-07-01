@@ -3,12 +3,14 @@
 should be C++ implementation of a thread pool with some api for parallel executions and profiling 
 
 TODO:
+
 high priority:
- - vector parallelism
  - profiling data for processor modes
  
 medium priority:
  - should the thread pool accept different function types?
+ - completion handlers after work is done
+ - vector parallelism (no template argument, copy -> move, better passing)
  
 low priority:
  - are lambdas really fine?
