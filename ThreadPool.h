@@ -18,9 +18,10 @@ public:
 	void addWork(const std::function<void()>& newJob);
 	void addWork(std::function<void()>&& newJob);
 	template<typename T>
-	void addWork(std::function<void(std::vector<T>)> newJob, std::vector<T> vector, size_t desiredDivision);
+	void addWork(std::function<void(std::vector<T>&, size_t, size_t)> newJob, std::vector<T>& vector, size_t desiredDivision = 0);
 
 	void stopRunning();
+	void stopRunningAndJoinAll();
 private:
 	std::vector<std::thread> threads;
 	std::queue<std::function<void()>> waitingJobs;
@@ -28,11 +29,19 @@ private:
 	bool running;
 
 	std::mutex queueLock;
+
+	void joinAll();
 };
 
 template<typename T>
-inline void ThreadPool::addWork(std::function<void(std::vector<T>)> newJob, 
-								std::vector<T> vector, 
+inline void ThreadPool::addWork(std::function<void(std::vector<T>&, size_t, size_t)> newJob,
+								std::vector<T>& vector, 
 								size_t desiredDivision) {
-	// todo
+	desiredDivision = (desiredDivision != 0) ? desiredDivision : threads.size();
+	size_t chunkSize = vector.size() / desiredDivision;
+	for (size_t i = 0; i < desiredDivision + 1; ++i) {
+		addWork([newJob, &vector, chunkSize, i]() {
+			newJob(vector, chunkSize * i, std::min(chunkSize * (i + 1), vector.size()));
+		});
+	}
 }

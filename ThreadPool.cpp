@@ -6,7 +6,7 @@ ThreadPool::ThreadPool(size_t threads, std::ostream* profilingOutputStream): pro
 	size_t threadCount = (threads > 0) ? threads : std::thread::hardware_concurrency();
 	this->threads.reserve(threadCount);
 	for (int i = 0; i < threadCount; ++i) {
-		this->threads.push_back(std::thread( [this]() { 
+		this->threads.push_back(std::thread( [this]() {
 			while (this->running || !waitingJobs.empty()) {
 				this->queueLock.lock();
 				if (waitingJobs.empty()) {
@@ -23,9 +23,7 @@ ThreadPool::ThreadPool(size_t threads, std::ostream* profilingOutputStream): pro
 }
 
 ThreadPool::~ThreadPool() {
-	for (std::vector<std::thread>::iterator it = threads.begin(); it != threads.end(); ++it) {
-		it->join();
-	}
+	joinAll();
 }
 
 void ThreadPool::addWork(const std::function<void()>& newJob) {
@@ -40,4 +38,16 @@ void ThreadPool::addWork(std::function<void()>&& newJob) {
 
 void ThreadPool::stopRunning() {
 	running = false;
+}
+
+void ThreadPool::stopRunningAndJoinAll() {
+	stopRunning();
+	joinAll();
+}
+
+void ThreadPool::joinAll() {
+	for (std::vector<std::thread>::iterator it = threads.begin(); it != threads.end(); ++it) {
+		it->join();
+	}
+	threads.clear();
 }
