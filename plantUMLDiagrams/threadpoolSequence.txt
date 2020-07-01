@@ -1,0 +1,18 @@
+http://www.plantuml.com/plantuml/png/bP2_QiCm4CPtFuMWImmHw8yNToXvX0o53iA3YgwDwLc2YqtespSfrY54wpQBmUXtl---EvndJ_CoOJFvCGhv9EOJWG_7b50yYcV-sNNjpuWFuINHn-vo_UYsATwaU_W4n7GPyeY-yj_StofJgrvn0HQPLMH-5HqzUKH05jgzy4HEAwM6lR2r_fq08lljwhTEoRxlXmec28nsZDxKKXUuBavGh_Wsnl5ykkjgrfbRWYaIBA--4S0jSexXUsuCcKntkV46N7Hl_r--BjKs1uXXcV0B
+
+@startuml
+main -> threadPool : ThreadPool(4)
+main -> threadPool : addWork(work1)
+threadPool -[#yellow]> thread1 : work1
+main -> threadPool : addWork(work2)
+threadPool -[#blue]> thread2 : work2
+main -> threadPool : addParallelWork(work3, arr[1000], 3)
+threadPool -[#green]> thread3 : work3[0-999]
+threadPool -[#red]> thread4 : work3[1000-1999]
+thread1 -[#yellow]-> threadPool : finish(work1)
+threadPool -[#yellow]> thread1 : work3[2000-2999]
+thread3 -[#green]-> threadPool : finish(work3[0-999])
+thread2 -[#blue]-> threadPool : finish(work2)
+thread4 -[#red]-> threadPool : finish(work[1000-1999])
+thread1 -[#yellow]-> threadPool : finish(work3[2000-2999])
+@enduml

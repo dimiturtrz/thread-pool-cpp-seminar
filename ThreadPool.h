@@ -5,6 +5,7 @@
 #include<queue>
 #include<functional>
 #include<thread>
+#include <mutex>
 
 
 class ThreadPool {
@@ -24,6 +25,8 @@ private:
 	std::queue<std::function<void()>> waitingJobs;
 	std::ostream* profilingOutputStream;
 	bool running;
+
+	std::mutex queueLock;
 };
 
 template<typename T>
