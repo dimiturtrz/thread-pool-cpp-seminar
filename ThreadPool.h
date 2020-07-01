@@ -15,7 +15,8 @@ public:
 	ThreadPool& operator=(const ThreadPool& other) = delete;
 	~ThreadPool();
 
-	void addWork(std::function<void()> newJob);
+	void addWork(const std::function<void()>& newJob);
+	void addWork(std::function<void()>&& newJob);
 	template<typename T>
 	void addWork(std::function<void(std::vector<T>)> newJob, std::vector<T> vector, size_t desiredDivision);
 

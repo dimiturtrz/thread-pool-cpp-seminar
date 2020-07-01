@@ -13,7 +13,7 @@ ThreadPool::ThreadPool(size_t threads, std::ostream* profilingOutputStream): pro
 					this->queueLock.unlock();
 					continue;
 				}
-				std::function<void()> newJob = this->waitingJobs.front();
+				std::function<void()> newJob = std::move(this->waitingJobs.front());
 				this->waitingJobs.pop();
 				this->queueLock.unlock();
 				newJob();
@@ -28,9 +28,14 @@ ThreadPool::~ThreadPool() {
 	}
 }
 
-void ThreadPool::addWork(std::function<void()> newJob) {
+void ThreadPool::addWork(const std::function<void()>& newJob) {
 	std::lock_guard<std::mutex> guard(queueLock);
 	waitingJobs.push(newJob);
+}
+
+void ThreadPool::addWork(std::function<void()>&& newJob) {
+	std::lock_guard<std::mutex> guard(queueLock);
+	waitingJobs.emplace(newJob);
 }
 
 void ThreadPool::stopRunning() {
