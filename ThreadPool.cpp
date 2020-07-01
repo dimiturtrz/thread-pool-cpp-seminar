@@ -8,19 +8,15 @@ ThreadPool::ThreadPool(size_t threads, std::ostream* profilingOutputStream): pro
 	for (int i = 0; i < threadCount; ++i) {
 		this->threads.push_back(std::thread( [this]() { 
 			while (this->running || !waitingJobs.empty()) {
-				try {
-					this->queueLock.lock();
-					if (waitingJobs.empty()) {
-						this->queueLock.unlock();
-						continue;
-					}
-					std::function<void()> newJob = this->waitingJobs.front();
-					this->waitingJobs.pop();
+				this->queueLock.lock();
+				if (waitingJobs.empty()) {
 					this->queueLock.unlock();
-					newJob();
-				} catch (std::system_error err) {
-					std::cout << 1;
+					continue;
 				}
+				std::function<void()> newJob = this->waitingJobs.front();
+				this->waitingJobs.pop();
+				this->queueLock.unlock();
+				newJob();
 			}
 		} ));
 	}
@@ -33,9 +29,8 @@ ThreadPool::~ThreadPool() {
 }
 
 void ThreadPool::addWork(std::function<void()> newJob) {
-	queueLock.lock();
+	std::lock_guard<std::mutex> guard(queueLock);
 	waitingJobs.push(newJob);
-	queueLock.unlock();
 }
 
 void ThreadPool::stopRunning() {
