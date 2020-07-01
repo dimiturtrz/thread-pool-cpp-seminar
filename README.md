@@ -3,6 +3,7 @@
 should be C++ implementation of a thread pool with some api for parallel executions and profiling 
 
 TODO:
+
 high priority:
  - profiling data for processor modes
  
