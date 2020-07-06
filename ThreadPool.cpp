@@ -2,7 +2,7 @@
 
 #include <iterator>
 
-ThreadPool::ThreadPool(size_t threads, std::ostream* profilingOutputStream): profilingOutputStream(profilingOutputStream), running(true) {
+ThreadPool::ThreadPool(size_t threads): running(true) {
 	size_t threadCount = (threads > 0) ? threads : std::thread::hardware_concurrency();
 	this->threads.reserve(threadCount);
 	for (int i = 0; i < threadCount; ++i) {
@@ -20,12 +20,11 @@ ThreadPool::ThreadPool(size_t threads, std::ostream* profilingOutputStream): pro
 				this->queueLock.unlock();
 				newJob();
 			}
+
 			threadTimer.stop();
-			if (this->profilingOutputStream != nullptr) {
-				threadTimersLock.lock();
-				threadTimers.push_back(threadTimer);
-				threadTimersLock.unlock();
-			}
+			threadTimersLock.lock();
+			threadTimers.push_back(threadTimer);
+			threadTimersLock.unlock();
 		} ));
 	}
 }
@@ -53,12 +52,11 @@ void ThreadPool::stopRunningAndJoinAll() {
 	joinAll();
 }
 
-std::ostream* ThreadPool::getProfilingOutputStream() {
-	return profilingOutputStream;
-}
-
-const std::vector<boost::timer::cpu_timer>& ThreadPool::getThreadTimers() {
-	return threadTimers;
+void ThreadPool::writeProfilingData(std::ostream& profilingOutputStream) const {
+	for (int i = 0; i < threadTimers.size(); ++i) {
+		profilingOutputStream << "thread " << i << " " << threadTimers[i].format(3) << std::endl;
+	}
+	profilingOutputStream << "thread pool: " << mainTimer.format(3) << std::endl;
 }
 
 void ThreadPool::joinAll() {
@@ -66,4 +64,5 @@ void ThreadPool::joinAll() {
 		it->join();
 	}
 	threads.clear();
+	mainTimer.stop();
 }

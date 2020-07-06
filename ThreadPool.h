@@ -10,7 +10,7 @@
 
 class ThreadPool {
 public:
-	ThreadPool(size_t threads = 0, std::ostream* profilingOutputStream = nullptr);
+	ThreadPool(size_t threads = 0);
 	ThreadPool(const ThreadPool& other) = delete;
 	ThreadPool& operator=(const ThreadPool& other) = delete;
 	~ThreadPool();
@@ -23,17 +23,17 @@ public:
 	void stopRunning();
 	void stopRunningAndJoinAll();
 
-	std::ostream* getProfilingOutputStream();
-	const std::vector<boost::timer::cpu_timer>& getThreadTimers();
+	void writeProfilingData(std::ostream& profilingOutputStream) const;
 private:
 	std::vector<std::thread> threads;
-	std::vector<boost::timer::cpu_timer> threadTimers;
 	std::queue<std::function<void()>> waitingJobs;
-	std::ostream* profilingOutputStream;
-	bool running;
-
 	std::mutex queueLock;
+
+	boost::timer::cpu_timer mainTimer;
+	std::vector<boost::timer::cpu_timer> threadTimers;
 	std::mutex threadTimersLock;
+
+	bool running;
 
 	void joinAll();
 };

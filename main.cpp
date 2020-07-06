@@ -14,12 +14,15 @@ int main() {
 	boost::timer::cpu_timer mainTimer;
 	mainTimer.start();
 
-	ThreadPool tp(10, &cout);
-	for (int i = 0; i < 3000; ++i) {
+	ThreadPool tp(10);
+	for (int i = 0; i < 1000; ++i) {
 		tp.addWork([i]() {
-			std::this_thread::sleep_for(std::chrono::milliseconds(50));
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 			std::lock_guard<std::mutex> writeGuard(m);
-			cout << "Hello "<< i<< " ";
+			for (int j = 0; j < i; ++j) {
+				sqrt(j);
+			}
+			//cout << "Hello "<< i<< " ";
 		});
 	}
 
@@ -32,7 +35,7 @@ int main() {
 	tp.addWork(tf2);
 
 	std::vector<int> v;
-	for (int i = 0; i < 50; ++i) {
+	for (int i = 0; i < 100000; ++i) {
 		v.push_back(i);
 	}
 
@@ -45,7 +48,9 @@ int main() {
 	tp.stopRunningAndJoinAll();
 
 	for (size_t i = 0; i < v.size(); ++i) {
-		cout << v[i] << " ";
+		if (i % 50 == 0) {
+			cout << v[i] << " ";
+		}
 	}
 	cout << endl;
 
@@ -54,14 +59,7 @@ int main() {
 	});
 	t1.join();
 
-	ostream* profilingOutputStream = tp.getProfilingOutputStream();
-	if (profilingOutputStream != nullptr) {
-		const vector<boost::timer::cpu_timer>& threadTimers = tp.getThreadTimers();
-		for (int i = 0; i < threadTimers.size(); ++i) {
-			*profilingOutputStream << "thread " << i << " " << threadTimers[i].format(3)<< endl;
-		}
-		*profilingOutputStream << "main thread: " << mainTimer.format(3) << endl;
-	}
+	tp.writeProfilingData(cout);
 
 	return 0;
 }
