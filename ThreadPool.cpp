@@ -2,11 +2,13 @@
 
 #include <iterator>
 
-ThreadPool::ThreadPool(size_t threads, std::ostream* profilingOutputStream): profilingOutputStream(nullptr), running(true) {
+ThreadPool::ThreadPool(size_t threads, std::ostream* profilingOutputStream): profilingOutputStream(profilingOutputStream), running(true) {
 	size_t threadCount = (threads > 0) ? threads : std::thread::hardware_concurrency();
 	this->threads.reserve(threadCount);
 	for (int i = 0; i < threadCount; ++i) {
-		this->threads.push_back(std::thread( [this]() {
+		this->threads.push_back(std::thread( [this, i]() {
+			boost::timer::cpu_timer threadTimer;
+			threadTimer.start();
 			while (this->running || !waitingJobs.empty()) {
 				this->queueLock.lock();
 				if (waitingJobs.empty()) {
@@ -17,6 +19,12 @@ ThreadPool::ThreadPool(size_t threads, std::ostream* profilingOutputStream): pro
 				this->waitingJobs.pop();
 				this->queueLock.unlock();
 				newJob();
+			}
+			threadTimer.stop();
+			if (this->profilingOutputStream != nullptr) {
+				threadTimersLock.lock();
+				threadTimers.push_back(threadTimer);
+				threadTimersLock.unlock();
 			}
 		} ));
 	}
@@ -43,6 +51,14 @@ void ThreadPool::stopRunning() {
 void ThreadPool::stopRunningAndJoinAll() {
 	stopRunning();
 	joinAll();
+}
+
+std::ostream* ThreadPool::getProfilingOutputStream() {
+	return profilingOutputStream;
+}
+
+const std::vector<boost::timer::cpu_timer>& ThreadPool::getThreadTimers() {
+	return threadTimers;
 }
 
 void ThreadPool::joinAll() {

@@ -6,7 +6,7 @@
 #include<functional>
 #include<thread>
 #include <mutex>
-
+#include <boost/timer/timer.hpp>
 
 class ThreadPool {
 public:
@@ -22,13 +22,18 @@ public:
 
 	void stopRunning();
 	void stopRunningAndJoinAll();
+
+	std::ostream* getProfilingOutputStream();
+	const std::vector<boost::timer::cpu_timer>& getThreadTimers();
 private:
 	std::vector<std::thread> threads;
+	std::vector<boost::timer::cpu_timer> threadTimers;
 	std::queue<std::function<void()>> waitingJobs;
 	std::ostream* profilingOutputStream;
 	bool running;
 
 	std::mutex queueLock;
+	std::mutex threadTimersLock;
 
 	void joinAll();
 };
