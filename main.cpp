@@ -61,6 +61,7 @@ int main() {
 	}
 
 	tp.addWork(new ParallelTask<vector<int>, PartialParallelPrintTask>(tp, vec, vec.size()));
+	//tp.addWork(new ParallelTask<vector<int>, int>(tp, vec, vec.size()));
 
 	tp.stopRunningAndJoinAll();
 	tp.writeProfilingData(cout);

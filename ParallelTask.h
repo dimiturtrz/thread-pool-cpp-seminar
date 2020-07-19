@@ -8,8 +8,8 @@
 template<typename A, typename P>
 class ParallelTask: public Task {
 public:
-	ParallelTask(ThreadPool& threadPool, A& indexableCollection, size_t size, size_t desiredDivision = 0):
-		threadPool(threadPool), indexableCollection(indexableCollection), size(size), desiredDivision(desiredDivision){}
+	ParallelTask(ThreadPool& threadPool, A& indexableCollection, size_t size, size_t desiredDivision = 0) :
+		threadPool(threadPool), indexableCollection(indexableCollection), size(size), desiredDivision(desiredDivision) {}
 
 	virtual void execute() final;
 	virtual Task* clone();
@@ -31,7 +31,7 @@ inline void ParallelTask<A, P>::execute() {
 			chunkSize * i,
 			std::min(chunkSize * (i + 1), size)
 		);
-		threadPool.addWork(dynamic_cast<Task*>(partialTask));
+		threadPool.addWork(std::move(static_cast<PartitionTask<A>*>(partialTask)));
 	}
 }
 
