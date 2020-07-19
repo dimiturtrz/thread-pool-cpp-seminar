@@ -1,4 +1,5 @@
 #include <iostream>
+#include <future>
 #include "ThreadPool.h"
 using namespace std;
 
@@ -14,7 +15,7 @@ int main() {
 	boost::timer::cpu_timer mainTimer;
 	mainTimer.start();
 
-	ThreadPool tp(10);
+	ThreadPool tp(100);
 	for (int i = 0; i < 1000; ++i) {
 		tp.addWork([i]() {
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -44,6 +45,11 @@ int main() {
 			v[i] *= 15;
 		}
 	}, v);
+
+	std::promise<int> p;
+	std::future<int> pf = p.get_future();
+	tp.addWork(std::bind([](std::promise<int>& p) { p.set_value(5 + 6); }, std::ref(p)));
+	cout << pf.get() << endl;
 
 	tp.stopRunningAndJoinAll();
 
