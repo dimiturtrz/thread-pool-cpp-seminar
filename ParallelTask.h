@@ -25,8 +25,9 @@ template<typename A, typename P>
 inline void ParallelTask<A, P>::execute() {
 	desiredDivision = (desiredDivision != 0) ? desiredDivision : std::thread::hardware_concurrency();
 	size_t chunkSize = size / (desiredDivision + (size % desiredDivision));
+	P* partialTask;
 	for (size_t i = 0; i < desiredDivision; ++i) {
-		P* partialTask = new P(
+		partialTask = new P(
 			indexableCollection,
 			chunkSize * i,
 			std::min(chunkSize * (i + 1), size)
