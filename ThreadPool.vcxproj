@@ -145,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ParallelTask.h" />
+    <ClInclude Include="PartitionTask.h" />
     <ClInclude Include="Task.h" />
     <ClInclude Include="ThreadPool.h" />
   </ItemGroup>
