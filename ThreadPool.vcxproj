@@ -144,6 +144,8 @@
     <ClCompile Include="ThreadPool.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ParallelTask.h" />
+    <ClInclude Include="Task.h" />
     <ClInclude Include="ThreadPool.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

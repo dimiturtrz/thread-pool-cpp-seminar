@@ -9,16 +9,17 @@ ThreadPool::ThreadPool(size_t threads): running(true) {
 		this->threads.push_back(std::thread( [this, i]() {
 			boost::timer::cpu_timer threadTimer;
 			threadTimer.start();
-			while (this->running || !waitingJobs.empty()) {
+			while (this->running || !waitingTasks.empty()) {
 				this->queueLock.lock();
-				if (waitingJobs.empty()) {
+				if (waitingTasks.empty()) {
 					this->queueLock.unlock();
 					continue;
 				}
-				std::function<void()> newJob = std::move(this->waitingJobs.front());
-				this->waitingJobs.pop();
+				Task* newTask = this->waitingTasks.front();
+				this->waitingTasks.pop();
 				this->queueLock.unlock();
-				newJob();
+				newTask->execute();
+				delete newTask;
 			}
 
 			threadTimer.stop();
@@ -33,14 +34,14 @@ ThreadPool::~ThreadPool() {
 	joinAll();
 }
 
-void ThreadPool::addWork(const std::function<void()>& newJob) {
+void ThreadPool::addWork(Task*& newJob) {
 	std::lock_guard<std::mutex> guard(queueLock);
-	waitingJobs.push(newJob);
+	waitingTasks.push(newJob->clone());
 }
 
-void ThreadPool::addWork(std::function<void()>&& newJob) {
+void ThreadPool::addWork(Task*&& newJob) {
 	std::lock_guard<std::mutex> guard(queueLock);
-	waitingJobs.emplace(newJob);
+	waitingTasks.emplace(newJob);
 }
 
 void ThreadPool::stopRunning() {
