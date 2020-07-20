@@ -18,7 +18,12 @@ int main(int argc, char* argv[]) {
 	for (int i = 0; i < 1000; ++i) {
 		//cout << i << endl;
 		//std::this_thread::sleep_for(10ms);
-		cout<< std::sqrt(i);
+		//cout<< std::sqrt(i);
+		double sum = 0;
+		for (int j = 0; j < 1000; ++j) {
+			sum += std::sqrt(i);
+		}
+		std::cout << sum << std::endl;
 	}
 
 	/*vector<int> v;

@@ -26,9 +26,9 @@ int main() {
 		delete pt;
 	}*/
 
-	/*for (int i = 0; i < 100000; ++i) {
-		tp.addWork(new PrintTask(i));
-	}*/
+	for (int i = 0; i < 1000; ++i) {
+		tp.addWork(new SqrtExample(i));
+	}
 
 	/*for (int i = 0; i < 100000; ++i) {
 		Task* pt = new PrintTask(i);
@@ -51,13 +51,13 @@ int main() {
 		tp.addWork(new SleepTask(10));
 	}*/
 
-	std::vector<int> vec;
+	/*std::vector<int> vec;
 	for (int i = 2000; i < 4000; ++i) {
 		vec.push_back(i);
 	}
 
-	//tp.addWork(new ParallelPrintTask(tp, 10000));
-	tp.addWork(new ParallelSqrtTask(vec, tp, vec.size()));
+	//tp.addWork(new ParallelPrintTask(vec, tp, 10000));*/
+	//tp.addWork(new ParallelSqrtTask(tp, 1000));
 
 
 	/*std::vector<int> vec1;

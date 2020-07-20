@@ -10,7 +10,11 @@ public:
 	SqrtExample(int val): val(val) {}
 	
 	void execute() {
-		std::cout<< std::sqrt(val);
+		double sum = 0;
+		for (int i = 0; i < 1000; ++i) {
+			sum += std::sqrt(val);
+		}
+		std::cout << sum << std::endl;
 	}
 
 	Task* clone() {
