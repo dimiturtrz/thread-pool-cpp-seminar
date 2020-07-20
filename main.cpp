@@ -9,6 +9,7 @@
 #include "PrintExample.h"
 #include "ParallelSqrtExample.h"
 #include "ParallelPrintExample.h"
+#include "SqrtExample.h"
 
 using namespace std;
 
@@ -19,17 +20,38 @@ int main() {
 
 	ThreadPool tp;
 
-	for (int i = 0; i < 100000; ++i) {
-		Task* pt = new PrintTask(i);
+	for (int i = 0; i < 1000; ++i) {
+		Task* pt = new SqrtExample(i);
 		tp.addWork(pt);
 		delete pt;
 	}
 
-	/*for (int i = 1000; i < 2000; ++i) {
+	/*for (int i = 0; i < 100000; ++i) {
 		tp.addWork(new PrintTask(i));
+	}*/
+
+	/*for (int i = 0; i < 100000; ++i) {
+		Task* pt = new PrintTask(i);
+		//tp.addWork(pt);
+		delete pt;
 	}
 
-	std::vector<int> vec;
+	for (int i = 0; i < 100000; ++i) {
+		tp.addWork(new PrintTask(i));
+	}*/
+
+
+	/*for (int i = 0; i < 1000; ++i) {
+		Task* pt = new SleepTask(10);
+		tp.addWork(pt);
+		delete pt;
+	}*/
+
+	/*for (int i = 0; i < 1000; ++i) {
+		tp.addWork(new SleepTask(10));
+	}*/
+
+	/*std::vector<int> vec;
 	for (int i = 2000; i < 4000; ++i) {
 		vec.push_back(i);
 	}

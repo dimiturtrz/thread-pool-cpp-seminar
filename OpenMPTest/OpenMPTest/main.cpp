@@ -1,5 +1,6 @@
 #include <chrono>
 #include <vector>
+#include <thread>
 #include <iostream>
 #include <omp.h>
 
@@ -14,8 +15,10 @@ int main(int argc, char* argv[]) {
 	auto start = chrono::steady_clock::now();
 
 	#pragma omp parallel for
-	for (int i = 0; i < 100000; ++i) {
-		cout << i << endl;
+	for (int i = 0; i < 1000; ++i) {
+		//cout << i << endl;
+		//std::this_thread::sleep_for(10ms);
+		cout<< std::sqrt(i);
 	}
 
 	/*vector<int> v;

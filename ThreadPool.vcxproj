@@ -151,6 +151,7 @@
     <ClInclude Include="ParallelTask.h" />
     <ClInclude Include="PartitionTask.h" />
     <ClCompile Include="SleepExample.h" />
+    <ClInclude Include="SqrtExample.h" />
     <ClInclude Include="Task.h" />
     <ClInclude Include="ThreadPool.h" />
   </ItemGroup>

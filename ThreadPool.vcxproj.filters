@@ -50,5 +50,8 @@
     <ClInclude Include="ParallelSqrtExample.h">
       <Filter>Header Files\Examples</Filter>
     </ClInclude>
+    <ClInclude Include="SqrtExample.h">
+      <Filter>Header Files\Examples</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

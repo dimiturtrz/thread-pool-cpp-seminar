@@ -8,17 +8,17 @@
 
 using namespace std;
 
-namespace sleepExample {
-	class SleepTask : public Task {
-	public:
-		SleepTask() {}
+class SleepTask : public Task {
+public:
+	SleepTask(int sec): sec(sec) {}
 
-		virtual void execute() {
-			std::this_thread::sleep_for(2ms);
-		}
+	virtual void execute() {
+		std::this_thread::sleep_for(std::chrono::milliseconds(sec));
+	}
 
-		virtual Task* clone() {
-			return new SleepTask(*this);
-		}
-	};
-}
+	virtual Task* clone() {
+		return new SleepTask(*this);
+	}
+
+	int sec;
+};
