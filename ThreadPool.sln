@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ThreadPool", "ThreadPool.vcxproj", "{313A0FF2-5E5E-4B1A-BD97-9F0938EC11EB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenMPTest", "OpenMPTest\OpenMPTest\OpenMPTest.vcxproj", "{4D582BD4-02B2-4C7F-B6E7-D0CFD6937897}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{313A0FF2-5E5E-4B1A-BD97-9F0938EC11EB}.Release|x64.Build.0 = Release|x64
 		{313A0FF2-5E5E-4B1A-BD97-9F0938EC11EB}.Release|x86.ActiveCfg = Release|Win32
 		{313A0FF2-5E5E-4B1A-BD97-9F0938EC11EB}.Release|x86.Build.0 = Release|Win32
+		{4D582BD4-02B2-4C7F-B6E7-D0CFD6937897}.Debug|x64.ActiveCfg = Debug|x64
+		{4D582BD4-02B2-4C7F-B6E7-D0CFD6937897}.Debug|x64.Build.0 = Debug|x64
+		{4D582BD4-02B2-4C7F-B6E7-D0CFD6937897}.Debug|x86.ActiveCfg = Debug|Win32
+		{4D582BD4-02B2-4C7F-B6E7-D0CFD6937897}.Debug|x86.Build.0 = Debug|Win32
+		{4D582BD4-02B2-4C7F-B6E7-D0CFD6937897}.Release|x64.ActiveCfg = Release|x64
+		{4D582BD4-02B2-4C7F-B6E7-D0CFD6937897}.Release|x64.Build.0 = Release|x64
+		{4D582BD4-02B2-4C7F-B6E7-D0CFD6937897}.Release|x86.ActiveCfg = Release|Win32
+		{4D582BD4-02B2-4C7F-B6E7-D0CFD6937897}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
