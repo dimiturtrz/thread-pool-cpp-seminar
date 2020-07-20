@@ -6,16 +6,30 @@
 
 using namespace std;
 
-class PartialParallelPrintTask : public PartitionTask<vector<int>> {
-	using PartitionTask<vector<int>>::PartitionTask;
+class PartialParallelPrintTask : public PartitionTask {
 
-	virtual void execute(vector<int>& vec, size_t startIndex, size_t endIndex) {
+public:
+	using PartitionTask::PartitionTask;
+
+	virtual void execute(size_t startIndex, size_t endIndex) {
 		for (size_t i = startIndex; i < endIndex; ++i) {
-			std::cout << vec[i] << std::endl;
+			std::cout << i << std::endl;
 		}
 	}
 
 	virtual Task* clone() {
 		return new PartialParallelPrintTask(*this);
 	}
+};
+
+class ParallelPrintTask : public ParallelTask {
+
+public:
+	using ParallelTask::ParallelTask;
+
+	PartitionTask* constructPartialTask(size_t startIndex, size_t endIndex) { 
+		return new PartialParallelPrintTask(startIndex, endIndex); 
+	}
+
+	Task* clone() { return new ParallelPrintTask(*this); }
 };

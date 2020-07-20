@@ -20,11 +20,11 @@ int main() {
 
 	ThreadPool tp;
 
-	for (int i = 0; i < 1000; ++i) {
+	/*for (int i = 0; i < 1000; ++i) {
 		Task* pt = new SqrtExample(i);
 		tp.addWork(pt);
 		delete pt;
-	}
+	}*/
 
 	/*for (int i = 0; i < 100000; ++i) {
 		tp.addWork(new PrintTask(i));
@@ -51,13 +51,13 @@ int main() {
 		tp.addWork(new SleepTask(10));
 	}*/
 
-	/*std::vector<int> vec;
+	std::vector<int> vec;
 	for (int i = 2000; i < 4000; ++i) {
 		vec.push_back(i);
 	}
 
-	tp.addWork(new ParallelTask<vector<int>, PartialParallelPrintTask>(tp, vec, vec.size()));*/
-	//tp.addWork(new ParallelTask<vector<int>, int>(tp, vec, vec.size()));
+	//tp.addWork(new ParallelPrintTask(tp, 10000));
+	tp.addWork(new ParallelSqrtTask(vec, tp, vec.size()));
 
 
 	/*std::vector<int> vec1;

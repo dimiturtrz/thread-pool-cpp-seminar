@@ -5,38 +5,27 @@
 #include "PartitionTask.h"
 #include "ThreadPool.h"
 
-template<typename A, typename P>
 class ParallelTask: public Task {
 public:
-	ParallelTask(ThreadPool& threadPool, A& indexableCollection, size_t size, size_t desiredDivision = 0) :
-		threadPool(threadPool), indexableCollection(indexableCollection), size(size), desiredDivision(desiredDivision) {}
+	ParallelTask(ThreadPool& threadPool, size_t size, size_t desiredDivision = 0) :
+		threadPool(threadPool), size(size), desiredDivision(desiredDivision) {}
 
 	virtual void execute() final;
-	virtual Task* clone();
+	virtual PartitionTask* constructPartialTask(size_t startIndex, size_t endIndex) = 0;
+
 private:
 
 	ThreadPool& threadPool;
-	A& indexableCollection;
 	size_t size;
 	size_t desiredDivision;
 };
 
-template<typename A, typename P>
-inline void ParallelTask<A, P>::execute() {
+inline void ParallelTask::execute() {
 	desiredDivision = (desiredDivision != 0) ? desiredDivision : std::thread::hardware_concurrency();
 	size_t chunkSize = size / (desiredDivision + (size % desiredDivision));
-	P* partialTask;
+	PartitionTask* partialTask;
 	for (size_t i = 0; i < desiredDivision; ++i) {
-		partialTask = new P(
-			indexableCollection,
-			chunkSize * i,
-			std::min(chunkSize * (i + 1), size)
-		);
-		threadPool.addWork(std::move(static_cast<PartitionTask<A>*>(partialTask)));
+		partialTask = constructPartialTask(chunkSize * i, std::min(chunkSize * (i + 1), size));
+		threadPool.addWork(std::move(partialTask));
 	}
-}
-
-template<typename A, typename P>
-inline Task* ParallelTask<A, P>::clone() {
-	return new ParallelTask<A, P>(*this);
 }
