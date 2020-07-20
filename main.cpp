@@ -27,7 +27,7 @@ int main() {
 	}*/
 
 	for (int i = 0; i < 1000; ++i) {
-		tp.addWork(new SqrtExample(i));
+		//tp.addWork(new SqrtExample(i));
 	}
 
 	/*for (int i = 0; i < 100000; ++i) {
@@ -57,7 +57,7 @@ int main() {
 	}
 
 	//tp.addWork(new ParallelPrintTask(vec, tp, 10000));*/
-	//tp.addWork(new ParallelSqrtTask(tp, 1000));
+	tp.addWork(new ParallelSqrtTask(tp, 10000));
 
 
 	/*std::vector<int> vec1;

@@ -27,6 +27,12 @@
     <ClCompile Include="SleepExample.h">
       <Filter>Header Files\Examples</Filter>
     </ClCompile>
+    <ClCompile Include="PartitionTask.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParallelTask.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ThreadPool.h">

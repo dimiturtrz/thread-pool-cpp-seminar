@@ -17,7 +17,3 @@ private:
 	size_t startIndex;
 	size_t endIndex;
 };
-
-inline void PartitionTask::execute() {
-	execute(startIndex, endIndex);
-}

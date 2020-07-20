@@ -3,7 +3,7 @@
 #include <iterator>
 
 ThreadPool::ThreadPool(size_t threads): running(true) {
-	size_t threadCount = (threads > 0) ? threads : std::thread::hardware_concurrency();
+	size_t threadCount = (threads > 0) ? threads : (std::thread::hardware_concurrency() - 1);
 	this->threads.reserve(threadCount);
 	for (int i = 0; i < threadCount; ++i) {
 		this->threads.push_back(std::thread( [this, i]() {

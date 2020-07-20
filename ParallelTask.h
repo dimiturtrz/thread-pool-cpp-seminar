@@ -19,13 +19,3 @@ private:
 	size_t size;
 	size_t desiredDivision;
 };
-
-inline void ParallelTask::execute() {
-	desiredDivision = (desiredDivision != 0) ? desiredDivision : std::thread::hardware_concurrency();
-	size_t chunkSize = size / (desiredDivision + (size % desiredDivision));
-	PartitionTask* partialTask;
-	for (size_t i = 0; i < desiredDivision; ++i) {
-		partialTask = constructPartialTask(chunkSize * i, std::min(chunkSize * (i + 1), size));
-		threadPool.addWork(std::move(partialTask));
-	}
-}
