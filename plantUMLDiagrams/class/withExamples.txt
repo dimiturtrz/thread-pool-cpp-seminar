@@ -1,0 +1,79 @@
+@startuml
+ThreadPool --> Task
+class ThreadPool {
+  -threads: vector<std::thread>
+  -waitingJobs: queue<Task*>
+  -queueLock: Mutex
+
+  -threadTimers: std::vector<boost::timer::cpu_timer>
+  -threadTimersLock: Mutex
+
+  -running: Bool
+
+  +ThreadPool(size_t threads = 0)
+  +ThreadPool(const ThreadPool& other) = delete
+  +ThreadPool& operator=(const ThreadPool& other) = delete
+  +~ThreadPool()
+  
+  +addWork(newJob: Task*)
+
+  +joinAll()
+
+  +stopRunning()
+  +stopRunningAndJoinAll()
+
+  +writeProfilingData(profilingOutputStream: std::ostream&)
+}
+
+interface Task {
+  execute()
+  clone()
+}
+
+ParallelTask --|> Task
+interface ParallelTask {
+  -threadPool: ThreadPool&
+  -size: size_t
+  -desiredDivision: size_t
+
+  +ParallelTask(threadPool: ThreadPool&, size: size_t, desiredDivision: size_t)
+  +execute()
+
+  constructPartialTask(startIndex: size_t, endIndex: size_t) : PartitionTask*
+}
+
+ParallelTask --> PartitionTask
+PartitionTask --|> Task
+interface PartitionTask {
+  -startIndex: size_t
+  -endIndex: size_t
+
+  +PartitionTask(startIndex: size_t, endIndex: size_t)
+  +execute()
+
+  execute(startIndex: size_t, endIndex: size_t)
+}
+
+class SleepTask <<Example>> {
+  +execute()
+  +clone(): Task*
+}
+SleepTask --|> Task
+
+ParallelVectorPrintTask --> PartitionVectorPrintTask  
+ParallelVectorPrintTask --|> ParallelTask
+class ParallelVectorPrintTask <<Example>> {
+  -vec: vector<int>
+
+  +constructPartialTask(startIndex: size_t, endIndex: size_t) : PartitionVectorPrintTask*
+  +clone(): Task*
+}
+
+PartitionVectorPrintTask  --|> PartitionTask
+class PartitionVectorPrintTask <<Example>> {
+  -vec: vector<int>
+
+  +execute(startIndex: size_t, endIndex: size_t)
+  +clone(): Task*
+}
+@enduml

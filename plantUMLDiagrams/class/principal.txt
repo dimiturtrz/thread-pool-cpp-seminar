@@ -1,0 +1,57 @@
+http://www.plantuml.com/plantuml/png/ZP51RzKm48Jl-HLpWWIArFDJ6nM94nUGgCIb4dBZ3J5rTeDtdGWG_nq_XxOyBkqfpdmp7cbyfUQIvJasGtIgk9uIEVzH9E9N0xnPQJ195sh-SB3AUknVFUBlcJBjTCmyM13kiRbWWR--bzlggLJKIcX-XIN966B17x8jsJvLkIc-ru_LhOQVzCNkYt29ypCyuvfYv1pZOgdxxy91M0sFmWk8JPIwal0KoUZKN_12oPcaosT5Zsdd_MT9T-t961Uh1DzsFPYsiaVtXB5AVoU_xXzYPpW5s4z5tdVof26HVnVMe46ugtEgoV8snhRy_MuQ5YD46ks0SypaMB4H9hSIJE3q3ZOHz8SQpJTyFCk_mnh5gAZoxRTIZgrCKADB2coLF3m90e-IPcT1-8RldmIRvEXhDuAzLB0OB2Sc3-7cYjZdEVu1
+
+@startuml
+ThreadPool --> Task
+class ThreadPool {
+  -threads: vector<std::thread>
+  -waitingJobs: queue<Task*>
+  -queueLock: Mutex
+
+  -threadTimers: std::vector<boost::timer::cpu_timer>
+  -threadTimersLock: Mutex
+
+  -running: Bool
+
+  +ThreadPool(size_t threads = 0)
+  +ThreadPool(const ThreadPool& other) = delete
+  +ThreadPool& operator=(const ThreadPool& other) = delete
+  +~ThreadPool()
+  
+  +addWork(newJob: Task*)
+
+  +joinAll()
+
+  +stopRunning()
+  +stopRunningAndJoinAll()
+
+  +writeProfilingData(profilingOutputStream: std::ostream&)
+}
+
+interface Task {
+  +execute()
+  +clone()
+}
+
+ParallelTask --|> Task
+interface ParallelTask {
+  -threadPool: ThreadPool&
+  -size: size_t
+  -desiredDivision: size_t
+
+  +ParallelTask(threadPool: ThreadPool&, size: size_t, desiredDivision: size_t)
+
+  +execute()
+  +constructPartialTask(startIndex: size_t, endIndex: size_t) : PartitionTask*
+}
+
+ParallelTask --> PartitionTask
+PartitionTask --|> Task
+interface PartitionTask {
+  -startIndex: size_t
+  -endIndex: size_t
+
+  +PartitionTask(startIndex: size_t, endIndex: size_t)
+  +execute(startIndex: size_t, endIndex: size_t)
+  +execute()
+}
+@enduml
