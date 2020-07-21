@@ -16,7 +16,7 @@ public:
 	virtual void execute(size_t startIndex, size_t endIndex) {
 		for (size_t i = startIndex; i < endIndex; ++i) {
 			double sum = 0;
-			for (int j = 0; j < 1000; ++j) {
+			for (int j = 0; j < 100000; ++j) {
 				sum += std::sqrt(i);
 			}
 			std::cout << sum<< std::endl;
