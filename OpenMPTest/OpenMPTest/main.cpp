@@ -14,13 +14,16 @@ The purpose of this code is to ensure that OpenMP is working and running on mult
 int main(int argc, char* argv[]) {
 	auto start = chrono::steady_clock::now();
 
+	int N = 100000;
+	int M = 10000;
+
 	#pragma omp parallel for
-	for (int i = 0; i < 100000; ++i) {
+	for (int i = 0; i < N; ++i) {
 		//cout << i << endl;
 		//std::this_thread::sleep_for(10ms);
 		//cout<< std::sqrt(i);
 		double sum = 0;
-		for (int j = 0; j < 10000; ++j) {
+		for (int j = 0; j < M; ++j) {
 			sum += std::sqrt(i);
 		}
 		std::cout << sum << std::endl;

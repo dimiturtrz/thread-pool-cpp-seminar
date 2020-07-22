@@ -7,11 +7,11 @@
 class SqrtExample : public Task {
 
 public:
-	SqrtExample(int val): val(val) {}
+	SqrtExample(int val, int M): val(val), M(M) {}
 	
 	void execute() {
 		double sum = 0;
-		for (int i = 0; i < 1000; ++i) {
+		for (int i = 0; i < M; ++i) {
 			sum += std::sqrt(val);
 		}
 		std::cout << sum << std::endl;
@@ -23,4 +23,5 @@ public:
 
 private:
 	int val;
+	int M;
 };

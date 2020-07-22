@@ -17,20 +17,21 @@ int main() {
 
 	ThreadPool tp;
 
+	int N = 100000;
+	int M = 10000;
 
-	for (int i = 0; i < 10; ++i) {
-		//tp.addWork(new SqrtExample(i));
-		tp.addWork(new SqrtExample(i));
+	for (int i = 0; i < N; ++i) {
+		tp.addWork(new SqrtExample(i, M));
 	}
 
 
-	/*for (int i = 0; i < 1000; ++i) {
-		Task* pt = new SqrtExample(i);
+	/*for (int i = 0; i < N; ++i) {
+		Task* pt = new SqrtExample(i, M);
 		tp.addWork(pt);
 		delete pt;
 	}*/
 
-	//tp.addWork(new ParallelSqrtTask(tp, 10000));
+	//tp.addWork(new ParallelSqrtTask(tp, N, M));
 
 	/*for (int i = 0; i < 100000; ++i) {
 		Task* pt = new PrintTask(i);

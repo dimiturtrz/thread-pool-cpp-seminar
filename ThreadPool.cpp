@@ -39,14 +39,18 @@ ThreadPool::~ThreadPool() {
 }
 
 void ThreadPool::addWork(Task*& newJob) {
-	std::lock_guard<std::mutex> guard(queueMutex);
-	waitingTasks.push(newJob->clone());
+	{
+		std::lock_guard<std::mutex> guard(queueMutex);
+		waitingTasks.push(newJob->clone());
+	}
 	queueCV.notify_one();
 }
 
 void ThreadPool::addWork(Task*&& newJob) {
-	std::lock_guard<std::mutex> guard(queueMutex);
-	waitingTasks.emplace(newJob);
+	{
+		std::lock_guard<std::mutex> guard(queueMutex);
+		waitingTasks.emplace(newJob);
+	}
 	queueCV.notify_one();
 }
 
