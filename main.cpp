@@ -15,15 +15,13 @@ using namespace std;
 
 int main() {
 
-	boost::timer::cpu_timer mainTimer;
-	mainTimer.start();
-
 	ThreadPool tp;
 
 
-	/*for (int i = 0; i < 10000; ++i) {
+	for (int i = 0; i < 10; ++i) {
+		//tp.addWork(new SqrtExample(i));
 		tp.addWork(new SqrtExample(i));
-	}*/
+	}
 
 
 	/*for (int i = 0; i < 1000; ++i) {
@@ -32,7 +30,7 @@ int main() {
 		delete pt;
 	}*/
 
-	tp.addWork(new ParallelSqrtTask(tp, 10000));
+	//tp.addWork(new ParallelSqrtTask(tp, 10000));
 
 	/*for (int i = 0; i < 100000; ++i) {
 		Task* pt = new PrintTask(i);

@@ -31,7 +31,8 @@ public:
 private:
 	std::vector<std::thread> threads;
 	std::queue<Task*> waitingTasks;
-	std::mutex queueLock;
+	std::mutex queueMutex;
+	std::condition_variable queueCV;
 
 	boost::timer::cpu_timer mainTimer;
 	std::vector<boost::timer::cpu_timer> threadTimers;

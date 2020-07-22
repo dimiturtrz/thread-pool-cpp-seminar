@@ -9,15 +9,19 @@ ThreadPool::ThreadPool(size_t threads): running(true) {
 		this->threads.push_back(std::thread( [this, i]() {
 			boost::timer::cpu_timer threadTimer;
 			threadTimer.start();
-			while (this->running || !waitingTasks.empty()) {
-				this->queueLock.lock();
-				if (waitingTasks.empty()) {
-					this->queueLock.unlock();
-					continue;
+			while (running || !waitingTasks.empty()) {
+				std::unique_lock<std::mutex> queueLock(queueMutex);
+				queueCV.wait(queueLock, [this]() { 
+					return !running || !waitingTasks.empty(); 
+					});
+				if (waitingTasks.empty() && !running) {
+					queueLock.unlock();
+					break;
 				}
+
 				Task* newTask = this->waitingTasks.front();
 				this->waitingTasks.pop();
-				this->queueLock.unlock();
+				queueLock.unlock();
 				newTask->execute();
 				delete newTask;
 			}
@@ -35,17 +39,20 @@ ThreadPool::~ThreadPool() {
 }
 
 void ThreadPool::addWork(Task*& newJob) {
-	std::lock_guard<std::mutex> guard(queueLock);
+	std::lock_guard<std::mutex> guard(queueMutex);
 	waitingTasks.push(newJob->clone());
+	queueCV.notify_one();
 }
 
 void ThreadPool::addWork(Task*&& newJob) {
-	std::lock_guard<std::mutex> guard(queueLock);
+	std::lock_guard<std::mutex> guard(queueMutex);
 	waitingTasks.emplace(newJob);
+	queueCV.notify_one();
 }
 
 void ThreadPool::stopRunning() {
 	running = false;
+	queueCV.notify_all();
 }
 
 void ThreadPool::stopRunningAndJoinAll() {
